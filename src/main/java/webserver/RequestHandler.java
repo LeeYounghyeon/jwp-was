@@ -1,10 +1,10 @@
 package webserver;
 
+import controller.Controller;
+import controller.CreateUserController;
+import controller.IndexController;
 import db.DataBase;
-import model.Request;
-import model.RequestParser;
-import model.Response;
-import model.User;
+import model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,9 +13,18 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.util.HashMap;
+import java.util.Map;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
+
+    public static Map<String, Controller> controllers = new HashMap<>();
+
+    static {
+        controllers.put("/user/create", new CreateUserController());
+        controllers.put("/index.html", new IndexController());
+    }
 
     private Socket connection;
 
@@ -30,32 +39,24 @@ public class RequestHandler implements Runnable {
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
             DataOutputStream dos = new DataOutputStream(out);
             RequestParser requestParser = new RequestParser(in);
-            Request request = new Request(requestParser.getHeaderInfo(),requestParser.getParameter());
+            Request request = new Request(requestParser.getHeaderInfo(), requestParser.getParameter());
             String url = request.getUrl();
 
-            String extension = url.substring(url.lastIndexOf(".") + 1);
+
 
             String classPath = "./templates" + url;
 
-            if (!"html".equals(extension)) {
-                classPath = "./static" + url;
-            }
 
             Response response = new Response(dos, classPath);
-            if (url.contains("/user/create")) {
-                saveUser(request);
-                response.response300(request.getHeader("Origin") + "/index.html");
-                return;
-            }
-            response.response200();
+
+            Controller controller = controllers.get(url);
+
+            controller.service(request, response);
+
+
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
-    }
-
-    private void saveUser(Request request) {
-        User user = new User(request.getParameter("userId"), request.getParameter("password"), request.getParameter("name"), request.getParameter("email"));
-        DataBase.addUser(user);
     }
 }
 
