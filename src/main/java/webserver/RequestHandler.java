@@ -87,7 +87,7 @@ public class RequestHandler implements Runnable {
     }
 
     private boolean isNotHtmlOrFile(String extension) {
-        return !(extension.equals(HTML) || extension.startsWith(PREFIX_SLASH));
+        return !(HTML.equals(extension)|| extension.startsWith(PREFIX_SLASH));
     }
 
     private boolean isFile(String extension) {
