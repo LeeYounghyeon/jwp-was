@@ -10,6 +10,7 @@ import http.response.ResponseWriter;
 import http.support.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import utils.BooleanUtils;
 import utils.ExtractInformationUtils;
 
 import java.io.DataOutputStream;
@@ -21,10 +22,6 @@ import java.util.Optional;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
-    private static final String PREFIX_SLASH = "/";
-    private static final String HTML = "html";
-    private static final String TEMPLATES = "./templates";
-    private static final String STATIC = "./static";
     private static final String JSESSION = "JSESSION";
 
     private Socket connection;
@@ -63,19 +60,19 @@ public class RequestHandler implements Runnable {
         String extension = ExtractInformationUtils.extractExtension(url);
         setSession(request, response, extension);
 
-        if (isFile(extension)) {
-            String classPath = getClassPath(url, extension);
+        if (BooleanUtils.isFile(extension)) {
+            String classPath = ExtractInformationUtils.getClassPath(url, extension);
             response.forward(classPath, HttpStatus.OK);
             return;
         }
 
-        if (!isFile(extension) && !extension.startsWith(PREFIX_SLASH)) {
+        if (BooleanUtils.isNothing(extension)) {
             response.notfound();
         }
     }
 
     private void setSession(Request request, Response response, String extension) {
-        if (isNotHtmlOrFile(extension)) {
+        if (BooleanUtils.isNotHtmlOrFile(extension)) {
             return;
         }
 
@@ -84,22 +81,6 @@ public class RequestHandler implements Runnable {
         if (request.notContainSession() || request.mismatchSessionId()) {
             response.addCookie(new Cookie(JSESSION, request.getSessionId()));
         }
-    }
-
-    private boolean isNotHtmlOrFile(String extension) {
-        return !(HTML.equals(extension)|| extension.startsWith(PREFIX_SLASH));
-    }
-
-    private boolean isFile(String extension) {
-        return !extension.startsWith(PREFIX_SLASH);
-    }
-
-    private String getClassPath(String url, String extension) {
-        if (HTML.equals(extension)) {
-            return TEMPLATES + url;
-        }
-
-        return STATIC + url;
     }
 }
 

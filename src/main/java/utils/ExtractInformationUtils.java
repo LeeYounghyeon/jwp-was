@@ -7,6 +7,9 @@ public class ExtractInformationUtils {
     private static final String EQUAL = "=";
     private static final String SEPARATOR = "&";
     private static final String DIVISION_EXTENSION = ".";
+    private static final String HTML = "html";
+    private static final String TEMPLATES = "./templates";
+    private static final String STATIC = "./static";
     private static final int NEXT_INT = 1;
 
     public static Map<String, String> extractInformation(String body) {
@@ -20,6 +23,14 @@ public class ExtractInformationUtils {
 
     public static String extractExtension(String url) {
         return url.substring(url.lastIndexOf(DIVISION_EXTENSION) + NEXT_INT);
+    }
+
+    public static String getClassPath(String url, String extension) {
+        if (HTML.equals(extension)) {
+            return TEMPLATES + url;
+        }
+
+        return STATIC + url;
     }
 
     private static void addUserInfo(Map<String, String> userInfo, String[] params) {
