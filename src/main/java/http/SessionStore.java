@@ -14,18 +14,11 @@ public class SessionStore {
 
     private static String makeSession(String sessionId) {
         if (isNotContainSession(sessionId) || sessions.get(sessionId).isInvalid()) {
-            removeSession(sessionId);
             sessionId = UUID.randomUUID().toString();
             Session session = new Session(sessionId);
             sessions.put(sessionId, session);
         }
         return sessionId;
-    }
-
-    private static void removeSession(String sessionId) {
-        if (Objects.nonNull(sessionId) && sessions.get(sessionId).isInvalid()) {
-            sessions.remove(sessionId);
-        }
     }
 
     private static boolean isNotContainSession(String sessionId) {
