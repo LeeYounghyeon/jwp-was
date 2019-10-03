@@ -50,7 +50,9 @@ public class Request {
     }
 
     public void setSession() {
-        this.session = SessionStore.getSession(getCookie(JSESSION).getValue());
+        Cookie cookie = getCookie(JSESSION);
+        String sessionId = Objects.isNull(cookie) ? "" : cookie.getValue();
+        this.session = SessionStore.getSession(sessionId);
     }
 
     public boolean mismatchSessionId() {

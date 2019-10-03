@@ -10,7 +10,7 @@ class SessionStoreTest {
 
     @BeforeEach
     void setUp() {
-        session = SessionStore.getSession(null);
+        session = SessionStore.getSession("");
     }
 
     @Test
