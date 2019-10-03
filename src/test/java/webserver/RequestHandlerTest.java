@@ -1,5 +1,6 @@
 package webserver;
 
+import controller.ControllerHandler;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -22,7 +23,8 @@ class RequestHandlerTest {
         socket = mock(Socket.class);
         InetAddress mockAddress = mock(InetAddress.class);
         OutputStream outputStream = mock(DataOutputStream.class);
-        requestHandler = new RequestHandler(socket);
+        ControllerHandler controllerHandler = new ControllerHandler();
+        requestHandler = new RequestHandler(socket, controllerHandler);
 
         when(socket.getInetAddress()).thenReturn(mockAddress);
         when(socket.getPort()).thenReturn(8080);

@@ -1,5 +1,6 @@
 package webserver;
 
+import controller.ControllerHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,9 +27,10 @@ public class WebServer {
 
             // 클라이언트가 연결될때까지 대기한다.
             Socket connection;
+            ControllerHandler controllerHandler = new ControllerHandler();
             ExecutorService es = Executors.newFixedThreadPool(10);
             while ((connection = listenSocket.accept()) != null) {
-                es.execute(new RequestHandler(connection));
+                es.execute(new RequestHandler(connection, controllerHandler));
             }
             es.shutdown();
         }
