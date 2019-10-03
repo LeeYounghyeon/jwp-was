@@ -8,12 +8,12 @@ import http.support.HttpStatus;
 public abstract class AbstractController implements Controller {
     @Override
     public void service(Request request, Response response) {
-        if (request.getMethod().equals(HttpMethod.POST.name())) {
+        if (request.getHttpMethod() == HttpMethod.POST) {
             doPost(request, response);
             return;
         }
 
-        if (request.getMethod().equals(HttpMethod.GET.name())) {
+        if (request.getHttpMethod() == HttpMethod.GET) {
             doGet(request, response);
         }
 

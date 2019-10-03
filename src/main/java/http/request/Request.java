@@ -4,6 +4,7 @@ import exception.NotFoundRequestElementException;
 import http.Cookie;
 import http.Session;
 import http.SessionStore;
+import http.support.HttpMethod;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,17 +24,15 @@ public class Request {
     private Map<String, String> header;
     private Map<String, String> parameter;
     private Map<String, Cookie> cookies;
+    private HttpMethod httpMethod;
     private Session session;
 
     public Request(Map<String, String> header, Map<String, String> parameter) {
         this.header = header;
         this.parameter = parameter;
         this.cookies = new HashMap<>();
+        this.httpMethod = HttpMethod.valueOf(header.get(METHOD).split(HEADER_SEPARATOR)[METHOD_FIRST]);
         containsCookie(header);
-    }
-
-    public String getMethod() {
-        return header.get(METHOD).split(HEADER_SEPARATOR)[METHOD_FIRST];
     }
 
     public String getPath() {
@@ -77,6 +76,10 @@ public class Request {
 
     public String getSessionId() {
         return session.getId();
+    }
+
+    public HttpMethod getHttpMethod() {
+        return httpMethod;
     }
 
     protected Cookie getCookie(String key) {

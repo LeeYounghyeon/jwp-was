@@ -1,5 +1,6 @@
 package http.request;
 
+import http.support.HttpMethod;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -27,7 +28,7 @@ class RequestTest {
         RequestParser requestParser = new RequestParser(in);
         Request request = new Request(requestParser.getHeaderInfo(), requestParser.getParameter());
 
-        assertThat(request.getMethod()).isEqualTo("POST");
+        assertThat(request.getHttpMethod()).isEqualTo(HttpMethod.POST);
         assertThat(request.getHeader("Connection")).isEqualTo("keep-alive");
         assertThat(request.getPath()).isEqualTo("/user/create");
         assertThat(requestParser.getParameter().get("userId")).isEqualTo("javajigi");
@@ -45,7 +46,7 @@ class RequestTest {
         RequestParser requestParser = new RequestParser(in);
         Request request = new Request(requestParser.getHeaderInfo(), requestParser.getParameter());
 
-        assertThat(request.getMethod()).isEqualTo("GET");
+        assertThat(request.getHttpMethod()).isEqualTo(HttpMethod.GET);
         assertThat(request.getHeader("Connection")).isEqualTo("keep-alive");
     }
 
@@ -65,7 +66,7 @@ class RequestTest {
         RequestParser requestParser = new RequestParser(in);
         Request request = new Request(requestParser.getHeaderInfo(), requestParser.getParameter());
 
-        assertThat(request.getMethod()).isEqualTo("POST");
+        assertThat(request.getHttpMethod()).isEqualTo(HttpMethod.POST);
         assertThat(request.getPath()).isEqualTo("/user/create");
         assertThat(request.getHeader("Connection")).isEqualTo("keep-alive");
         assertThat(request.getParameter("id")).isEqualTo("1");
